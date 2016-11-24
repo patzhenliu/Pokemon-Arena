@@ -2,7 +2,7 @@ package Pokemon;
 //Pokemon.java
 
 import java.util.*;
-enum pokemonType {EARTH, FIRE, GRASS, WATER, FIGHTING, ELECTRIC, NOT_A_TYPE};
+enum pokemonType {Earth, Fire, Grass, Water, Fighting, Electric, Not_A_Type};
 
 public class Pokemon {
     private String name;
@@ -22,25 +22,25 @@ public class Pokemon {
         pokemonType returnType;
         switch (type) {
             case "earth":
-                returnType = pokemonType.EARTH;
+                returnType = pokemonType.Earth;
                 break;
             case "fire":
-                returnType = pokemonType.FIRE;
+                returnType = pokemonType.Fire;
                 break;
             case "grass":
-                returnType = pokemonType.GRASS;
+                returnType = pokemonType.Grass;
                 break;
             case "water":
-                returnType = pokemonType.WATER;
+                returnType = pokemonType.Water;
                 break;
             case "fighting":
-                returnType = pokemonType.FIGHTING;
+                returnType = pokemonType.Fighting;
                 break;
             case "electric":
-                returnType = pokemonType.ELECTRIC;
+                returnType = pokemonType.Electric;
                 break;
             default:
-                returnType = pokemonType.NOT_A_TYPE;
+                returnType = pokemonType.Not_A_Type;
         }
 
         return returnType;
@@ -67,8 +67,14 @@ public class Pokemon {
 
     public void print(){
         System.out.printf("%-14s %-10d %-10d %-12s %-12s %-10s%n", name, hp, energy, type,
-                         (resistance==pokemonType.NOT_A_TYPE)?"-":resistance,
-                         (weakness==pokemonType.NOT_A_TYPE)?"-":weakness);
+                         (resistance==pokemonType.Not_A_Type)?"-":resistance,
+                         (weakness==pokemonType.Not_A_Type)?"-":weakness);
+        //System.out.println();
+        for(int i = 0; i< attacks.size(); i++){
+          attacks.get(i).print(i + 1);
+
+        }
+        System.out.println("----------------------------------------------------------------------------");
 
     }
 }

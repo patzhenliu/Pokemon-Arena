@@ -1,6 +1,6 @@
 package Pokemon;
 
-enum attackType {STUN, WILD_CARD, WILD_STORM, DISABLE, RECHARGE, NONE};
+enum attackType {Stun, Wild_Card, Wild_Storm, Disable, Recharge, None};
 
 public class Attack {
     private String name;
@@ -21,25 +21,31 @@ public class Attack {
         attackType returnType;
         switch (type) {
             case "stun":
-                returnType = attackType.STUN;
+                returnType = attackType.Stun;
                 break;
-            case "wild card,":
-                returnType = attackType.WILD_CARD;
+            case "wild card":
+                returnType = attackType.Wild_Card;
                 break;
             case "wild storm":
-                returnType = attackType.WILD_STORM;
+                returnType = attackType.Wild_Storm;
                 break;
             case "disable":
-                returnType = attackType.DISABLE;
+                returnType = attackType.Disable;
                 break;
             case "recharge":
-                returnType = attackType.RECHARGE;
+                returnType = attackType.Recharge;
                 break;
             default:
-                returnType = attackType.NONE;
+                returnType = attackType.None;
         }
 
         return returnType;
+
+    }
+
+    public void print(int attackNumber){
+        System.out.printf("%4s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", new String(Character.toChars(0x0A66)), "ATK", attackNumber,  name,
+                          energyCost, damage, (special==attackType.None)?"-":special.toString().replace("_", " "));
 
     }
 }
