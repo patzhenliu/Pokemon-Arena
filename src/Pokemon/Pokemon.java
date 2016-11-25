@@ -9,12 +9,10 @@ public class Pokemon {
     private int hp, energy;
     private pokemonType type, resistance, weakness;
     private ArrayList<Attack> attacks;
-    private boolean isOnTeam;
 
     public Pokemon(String inputInfo){
         //Gyarados,100,water,leaf,earth,2,Dragon Rage,30,50, ,Bubblebeam,40,40,disable
         String[] pokemonInfo = inputInfo.split(",");
-        isOnTeam = false;
 
         setPokemon(pokemonInfo[0], Integer.parseInt(pokemonInfo[1]), stringToPokemonType(pokemonInfo[2]), stringToPokemonType(pokemonInfo[3]),
                 stringToPokemonType(pokemonInfo[4]), stringToAttackArray(Integer.parseInt(pokemonInfo[5]), pokemonInfo));
@@ -82,5 +80,9 @@ public class Pokemon {
 
     public String getPokemonName(){
         return name;
+    }
+
+    public boolean isFainted(){
+        return hp <= 0;
     }
 }

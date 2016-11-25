@@ -66,16 +66,23 @@ public class PokemonArena {
         System.out.println();
     }
 
-    public int choosePokemon(){
-        System.out.print("Choose a Pokemon: ");
-        Scanner kb = new Scanner(System.in);
-        int pokemonChosen;
-        try{
-            pokemonChosen = kb.nextInt();
-        }catch(Exception ex){
-            return -1;
+    public int choosePokemon(String caption, ArrayList<Pokemon> pokemon){
+
+        int pokemonChosen = -1;
+
+        while((pokemonChosen > pokemon.size()) || (pokemonChosen <= 0)){
+            try{
+                System.out.print(caption);
+                Scanner kb = new Scanner(System.in);
+                pokemonChosen = kb.nextInt();
+            }catch(Exception ex){
+                System.out.println("Please enter a number\n");
+            }
+            if((pokemonChosen > pokemon.size()) || (pokemonChosen <= 0)){
+                System.out.println("There is no such Pokemon\n");
+            }
         }
-        return pokemonChosen;
+        return pokemonChosen - 1;
     }
 
     public void selectPokemon(ArrayList<Pokemon> pokemonProfiles,
@@ -83,16 +90,13 @@ public class PokemonArena {
                               ArrayList<Pokemon> enemyPokemon){
         System.out.println("Select (4) Pokemon to begin by typing in the number");
         while (partyPokemon.size() < partySize){
-            int pokemonIndex = choosePokemon();
-            if ((pokemonIndex > pokemonProfiles.size()) || (pokemonIndex <= 0)){
-                System.out.println("There is no such Pokemon\n");
-            }
-            else if (partyPokemon.contains(pokemonProfiles.get(pokemonIndex-1))){
-                System.out.printf("You've already chosen %s%n%n",pokemonProfiles.get(pokemonIndex-1).getPokemonName());
+            int pokemonIndex = choosePokemon("Choose a Pokemon: ", pokemonProfiles);
+            if (partyPokemon.contains(pokemonProfiles.get(pokemonIndex))){
+                System.out.printf("You've already chosen %s%n%n",pokemonProfiles.get(pokemonIndex).getPokemonName());
             }
             else{
-                partyPokemon.add(pokemonProfiles.get(pokemonIndex-1));
-                System.out.printf("You've chosen %s!%n%n",pokemonProfiles.get(pokemonIndex-1).getPokemonName());
+                partyPokemon.add(pokemonProfiles.get(pokemonIndex));
+                System.out.printf("You've chosen %s!%n%n",pokemonProfiles.get(pokemonIndex).getPokemonName());
             }
         }
 
@@ -103,6 +107,12 @@ public class PokemonArena {
 
     }
 
+
+    public Pokemon choosePokemonToFight(ArrayList<Pokemon> partyPokemon){
+        Pokemon p = partyPokemon.get(choosePokemon("Choose a Pokemon to fight: ", partyPokemon));
+        System.out.printf("%s, I CHOOSE YOU!", p.getPokemonName());
+        return p;
+    }
 	/*
     public void actionMenu(Pokemon pokemon){
     	int ATTACK = 1;
@@ -144,6 +154,8 @@ public class PokemonArena {
 
         printMenu(partyPokemon);
         Collections.shuffle(enemyPokemon);
+
+        Pokemon inBattle = choosePokemonToFight(partyPokemon);
 
         //randomize enemy pokemon list
         //choose who starts
