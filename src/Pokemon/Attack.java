@@ -1,5 +1,7 @@
 package Pokemon;
 
+//Attack.java
+
 enum attackType {Stun, Wild_Card, Wild_Storm, Disable, Recharge, None};
 
 public class Attack {

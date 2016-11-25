@@ -9,10 +9,12 @@ public class Pokemon {
     private int hp, energy;
     private pokemonType type, resistance, weakness;
     private ArrayList<Attack> attacks;
+    private boolean isOnTeam;
 
     public Pokemon(String inputInfo){
         //Gyarados,100,water,leaf,earth,2,Dragon Rage,30,50, ,Bubblebeam,40,40,disable
         String[] pokemonInfo = inputInfo.split(",");
+        isOnTeam = false;
 
         setPokemon(pokemonInfo[0], Integer.parseInt(pokemonInfo[1]), stringToPokemonType(pokemonInfo[2]), stringToPokemonType(pokemonInfo[3]),
                 stringToPokemonType(pokemonInfo[4]), stringToAttackArray(Integer.parseInt(pokemonInfo[5]), pokemonInfo));
@@ -67,14 +69,18 @@ public class Pokemon {
 
     public void print(){
         System.out.printf("%-14s %-10d %-10d %-12s %-12s %-10s%n", name, hp, energy, type,
-                         (resistance==pokemonType.Not_A_Type)?"-":resistance,
-                         (weakness==pokemonType.Not_A_Type)?"-":weakness);
+                (resistance==pokemonType.Not_A_Type)?"-":resistance,
+                (weakness==pokemonType.Not_A_Type)?"-":weakness);
         //System.out.println();
         for(int i = 0; i< attacks.size(); i++){
-          attacks.get(i).print(i + 1);
+            attacks.get(i).print(i + 1);
 
         }
         System.out.println("----------------------------------------------------------------------------");
 
+    }
+
+    public String getPokemonName(){
+        return name;
     }
 }
