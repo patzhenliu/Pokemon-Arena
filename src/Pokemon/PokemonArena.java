@@ -100,22 +100,18 @@ public class PokemonArena {
             }
         }
 
-        enemyPokemon = new ArrayList<Pokemon>(pokemonProfiles);
-        for (int i = 0; i < partySize; i++){
-            enemyPokemon.remove(partyPokemon.get(i));
-        }
-
     }
 
 
     public Pokemon choosePokemonToFight(ArrayList<Pokemon> partyPokemon){
         Pokemon p = partyPokemon.get(choosePokemon("Choose a Pokemon to fight: ", partyPokemon));
-        System.out.printf("%s, I CHOOSE YOU!", p.getPokemonName());
+        System.out.printf("%s, I CHOOSE YOU!%n%n", p.getPokemonName());
         return p;
     }
-	/*
-    public void actionMenu(Pokemon pokemon){
-    	int ATTACK = 1;
+
+    public void actionMenu(Pokemon yourPokemon, Pokemon enemyPokemon){
+        yourPokemon.attack(enemyPokemon);
+    	/*int ATTACK = 1;
     	int RETREAT = 2;
     	int PASS = 3;
 
@@ -137,8 +133,23 @@ public class PokemonArena {
         	else{
         		System.out.println("That is not a valid action");
         	}
-    	}
-    }*/
+    	}*/
+    }
+
+    public void battle(Pokemon yourPokemon, Pokemon enemyPokemon){
+        //System.out.printf("%30s", "BATTLE");
+        boolean yourTurn = true;
+
+        while(true){
+            if (yourTurn){
+                actionMenu(yourPokemon, enemyPokemon);
+                yourTurn = false;
+            }
+            else{
+                return;
+            }
+        }
+    }
 
     public void run(){
         ArrayList<Pokemon> partyPokemon = new ArrayList<Pokemon>();
@@ -152,10 +163,18 @@ public class PokemonArena {
         printMenu(pokemonProfiles);
         selectPokemon(pokemonProfiles, partyPokemon, enemyPokemon); //Ask user to select partySize number of Pokemon
 
+        enemyPokemon = new ArrayList<Pokemon>(pokemonProfiles);
+        for (int i = 0; i < partySize; i++){
+            enemyPokemon.remove(partyPokemon.get(i));
+        }
+
         printMenu(partyPokemon);
         Collections.shuffle(enemyPokemon);
 
         Pokemon inBattle = choosePokemonToFight(partyPokemon);
+        //System.out.println(enemyPokemon.size());
+        battle(inBattle, enemyPokemon.get(0));
+        System.out.println(enemyPokemon.get(0).getPokemonName() + " has " + enemyPokemon.get(0).getHP() + " hp");
 
         //randomize enemy pokemon list
         //choose who starts

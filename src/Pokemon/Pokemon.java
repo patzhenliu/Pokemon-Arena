@@ -85,4 +85,20 @@ public class Pokemon {
     public boolean isFainted(){
         return hp <= 0;
     }
+
+    public void attack(Pokemon enemyPokemon){
+        System.out.print("Choose an attack: ");
+        Scanner kb = new Scanner(System.in);
+        int attackInt = kb.nextInt() - 1;
+        enemyPokemon.setHP(enemyPokemon.getHP() - attacks.get(attackInt).getDamage());
+    }
+
+    public int getHP(){
+        return hp;
+    }
+
+    private void setHP(int newHP){
+
+        hp = newHP;
+    }
 }

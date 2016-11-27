@@ -46,8 +46,14 @@ public class Attack {
     }
 
     public void print(int attackNumber){
-        System.out.printf("%4s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", new String(Character.toChars(0x0A66)), "ATK", attackNumber,  name,
-                          energyCost, damage, (special==attackType.None)?"-":special.toString().replace("_", " "));
+        System.out.printf("%4s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", (char)149, "ATK", attackNumber,  name,
+                energyCost, damage, (special==attackType.None)?"-":special.toString().replace("_", " "));
+        //new String(Character.toChars(0x0A66))
 
     }
+
+    public int getDamage(){
+        return damage;
+    }
+
 }
