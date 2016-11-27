@@ -86,12 +86,11 @@ public class Pokemon {
         return hp <= 0;
     }
 
-    public void attack(Pokemon enemyPokemon){
-        System.out.print("Choose an attack: ");
-        Scanner kb = new Scanner(System.in);
-        int attackInt = kb.nextInt() - 1;
+    public void attack(int attackInt, Pokemon enemyPokemon){
         enemyPokemon.setHP(enemyPokemon.getHP() - attacks.get(attackInt).getDamage());
+        energy -= attacks.get(attackInt).getEnergyCost();
     }
+
 
     public int getHP(){
         return hp;
@@ -100,5 +99,9 @@ public class Pokemon {
     private void setHP(int newHP){
 
         hp = newHP;
+    }
+
+    public int getAttackNum(){
+        return attacks.size();
     }
 }

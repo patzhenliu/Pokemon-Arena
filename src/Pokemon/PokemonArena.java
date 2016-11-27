@@ -3,10 +3,12 @@ package Pokemon;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 
 public class PokemonArena {
     private int partySize = 4;
-    /*   public void choosePokemon() {
+    private enum actionType {ATTACK, RETREAT, PASS};
+    /*   public void chooseNumber() {
         readFile();
         System.out.println(Arrays.toString(pokemon));
         selectPartyPokemon();
@@ -66,23 +68,23 @@ public class PokemonArena {
         System.out.println();
     }
 
-    public int choosePokemon(String caption, ArrayList<Pokemon> pokemon){
+    public int chooseNumber(String caption, int listSize){
 
-        int pokemonChosen = -1;
+        int numberChosen = -1;
 
-        while((pokemonChosen > pokemon.size()) || (pokemonChosen <= 0)){
+        while((numberChosen > listSize) || (numberChosen <= 0)){
             try{
                 System.out.print(caption);
                 Scanner kb = new Scanner(System.in);
-                pokemonChosen = kb.nextInt();
+                numberChosen = kb.nextInt();
             }catch(Exception ex){
                 System.out.println("Please enter a number\n");
             }
-            if((pokemonChosen > pokemon.size()) || (pokemonChosen <= 0)){
-                System.out.println("There is no such Pokemon\n");
+            if((numberChosen > listSize) || (numberChosen <= 0)){
+                System.out.println("Invalid input\n");
             }
         }
-        return pokemonChosen - 1;
+        return numberChosen - 1;
     }
 
     public void selectPokemon(ArrayList<Pokemon> pokemonProfiles,
@@ -90,7 +92,7 @@ public class PokemonArena {
                               ArrayList<Pokemon> enemyPokemon){
         System.out.println("Select (4) Pokemon to begin by typing in the number");
         while (partyPokemon.size() < partySize){
-            int pokemonIndex = choosePokemon("Choose a Pokemon: ", pokemonProfiles);
+            int pokemonIndex = chooseNumber("Choose a Pokemon: ", pokemonProfiles.size());
             if (partyPokemon.contains(pokemonProfiles.get(pokemonIndex))){
                 System.out.printf("You've already chosen %s%n%n",pokemonProfiles.get(pokemonIndex).getPokemonName());
             }
@@ -104,51 +106,80 @@ public class PokemonArena {
 
 
     public Pokemon choosePokemonToFight(ArrayList<Pokemon> partyPokemon){
-        Pokemon p = partyPokemon.get(choosePokemon("Choose a Pokemon to fight: ", partyPokemon));
+        Pokemon p = partyPokemon.get(chooseNumber("Choose a Pokemon to fight: ", partyPokemon.size()));
         System.out.printf("%s, I CHOOSE YOU!%n%n", p.getPokemonName());
         return p;
     }
 
-    public void actionMenu(Pokemon yourPokemon, Pokemon enemyPokemon){
-        yourPokemon.attack(enemyPokemon);
-    	/*int ATTACK = 1;
-    	int RETREAT = 2;
-    	int PASS = 3;
+    private void printActionMenu(){
+        System.out.println("What will you do next?");
+        for (int i = 0; i < actionType.values().length; i++){
+            System.out.println(i+1 + " - " + actionType.values()[i].toString());
+        }
+    }
 
-    	count = 0;
-    	Scanner kb = new Scanner(System.in);
-    	while (count < 1){
-        	int action = kb.nextInt();
-        	if (action == ATTACK){
-        		pokemon.chooseAttack();
-        		count++;
-        	}
-        	else if (action == RETREAT){
-        		pokemon.retreat();
-        		count++;
-        	}
-        	//else if (action == PASS){
-        	//	pokemon.pass();
-        	//}
-        	else{
-        		System.out.println("That is not a valid action");
-        	}
-    	}*/
+    private boolean actionMenu(Pokemon yourPokemon, Pokemon enemyPokemon){
+
+        boolean changePokemon = false;
+
+        printActionMenu();
+        int actionInt = chooseNumber("Choose an action: ", actionType.values().length);
+
+        switch (actionInt) {
+            case 0:
+                int attackInt = chooseNumber("Choose an attack: ", yourPokemon.getAttackNum());
+                yourPokemon.attack(attackInt, enemyPokemon);
+                break;
+            case 1:
+                changePokemon = true;
+                break;
+            case 2:
+
+                break;
+            //default:
+        }
+        return changePokemon;
     }
 
     public void battle(Pokemon yourPokemon, Pokemon enemyPokemon){
         //System.out.printf("%30s", "BATTLE");
         boolean yourTurn = true;
+        boolean changePokemon = false;
 
-        while(true){
+        while(!yourPokemon.isFainted() && !enemyPokemon.isFainted() && !changePokemon){
+            if (changePokemon){
+                return;
+            }
             if (yourTurn){
-                actionMenu(yourPokemon, enemyPokemon);
-                yourTurn = false;
+                changePokemon = actionMenu(yourPokemon, enemyPokemon);
+                //yourTurn = false;
             }
             else{
+                //cpu's turn
                 return;
             }
         }
+    }
+
+    private boolean checkAllPokemonFainted(ArrayList<Pokemon> pokemon){
+        for (Pokemon p:pokemon){
+            if (!p.isFainted()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isGameOver(ArrayList<Pokemon> partyPokemon, ArrayList<Pokemon> enemyPokemon){
+        if (checkAllPokemonFainted(partyPokemon)){
+            System.out.println("YOU LOSE!");
+            return true;
+        }
+        else if (checkAllPokemonFainted(enemyPokemon)){
+            System.out.println("YOU WIN!");
+            return true;
+        }
+        return false;
     }
 
     public void run(){
@@ -171,10 +202,16 @@ public class PokemonArena {
         printMenu(partyPokemon);
         Collections.shuffle(enemyPokemon);
 
-        Pokemon inBattle = choosePokemonToFight(partyPokemon);
-        //System.out.println(enemyPokemon.size());
-        battle(inBattle, enemyPokemon.get(0));
-        System.out.println(enemyPokemon.get(0).getPokemonName() + " has " + enemyPokemon.get(0).getHP() + " hp");
+        boolean gameOver = false;
+        while (!gameOver) {
+            Pokemon inBattle = choosePokemonToFight(partyPokemon);
+            //System.out.println(enemyPokemon.size());
+            battle(inBattle, enemyPokemon.get(0));   ///change enemy pokemon when fainted
+            gameOver = isGameOver(partyPokemon, enemyPokemon);
+            System.out.println(enemyPokemon.get(0).getPokemonName() + " has " + enemyPokemon.get(0).getHP() + " hp");
+
+        }
+        //
 
         //randomize enemy pokemon list
         //choose who starts

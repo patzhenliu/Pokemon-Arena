@@ -56,4 +56,8 @@ public class Attack {
         return damage;
     }
 
+    public int getEnergyCost(){
+        return energyCost;
+    }
+
 }
