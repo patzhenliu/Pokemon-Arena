@@ -9,6 +9,7 @@ public class Pokemon {
     private int hp, maxhp, energy;
     private pokemonType type, resistance, weakness;
     private ArrayList<Attack> attacks;
+    private boolean isDisabled;
 
     public Pokemon(String inputInfo){
         //Gyarados,100,water,leaf,earth,2,Dragon Rage,30,50, ,Bubblebeam,40,40,disable
@@ -64,6 +65,7 @@ public class Pokemon {
         this.resistance = resistance;
         this.weakness = weakness;
         this.attacks = attacks;
+
     }
 
     public void printPokemonStatus(boolean yourPokemon){
@@ -122,12 +124,15 @@ public class Pokemon {
             damage = damage * 2;
             //System.out.println("Super Effective!");
         }
+        if (isDisabled){
+            damage -= 10;
+        }
 
         while (doAttack == true && enemyPokemon.getHP() > 0){
             doAttack = attacks.get(attackInt).doesPokemonAttack();
             //check resistance and weakness
             if (doAttack == true) {
-                System.out.printf("%s used %s", getName(), getAttackList().get(attackInt).getName()); // delete later
+                System.out.printf("%s used %s%n", getName(), getAttackList().get(attackInt).getName()); // delete later
 
 
                 enemyPokemon.setHP(enemyPokemon.getHP() - damage);
@@ -136,14 +141,15 @@ public class Pokemon {
                     setEnergy(energy + 20);
                 }
             }
-            //break if not wild storm
 
-            if (attacks.get(attackInt).getSpecial() == attackType.Wild_Storm && doAttack){
-                count++;
-                System.out.printf("(%d)%n", count);
-            }
-            else{
-                System.out.println();
+            if (attacks.get(attackInt).getSpecial() == attackType.Wild_Storm){
+                if (doAttack) {
+                    count++;
+                    System.out.printf("(%d)%n", count);
+                }
+                else{
+                    System.out.println();
+                }
             }
 
             if (attacks.get(attackInt).getSpecial() != attackType.Wild_Storm){
@@ -151,6 +157,12 @@ public class Pokemon {
                     if (attacks.get(attackInt).getSpecial() == attackType.Wild_Card){
                         System.out.printf("%s tried to use %s, but failed%n", name, attacks.get(attackInt).getName());
                     }
+                }
+                if (attacks.get(attackInt).getSpecial() == attackType.Recharge){
+                    specialAttackRecharge();
+                }
+                if (attacks.get(attackInt).getSpecial() == attackType.Disable && !isDisabled){
+                    enemyPokemon.setIsDisabled(enemyPokemon, true);
                 }
 
                 doAttack = false;
@@ -221,7 +233,20 @@ public class Pokemon {
         setHP(hp + 20);
     }
 
-    public void specialAttackRecover(){
+    private void specialAttackRecharge(){
         setEnergy(energy + 20);
     }
+
+    public void setDisabled(){
+        if (isDisabled && !isFainted()) {
+            isDisabled = false;
+            System.out.printf("%s is no longer disabled%n", name);
+        }
+    }
+
+    private void setIsDisabled(Pokemon enemyPokemon, boolean bool){
+        System.out.printf("%s is disabled%n", enemyPokemon.getName());
+        isDisabled = bool;
+    }
+
 }

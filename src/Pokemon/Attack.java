@@ -11,11 +11,13 @@ public class Attack {
         public boolean stunned;
         public boolean doAttack;
         public boolean recharge;
+        public boolean disabled;
 
         public specialAttackReturn(){
             stunned = false;
             doAttack = true;
             recharge = false;
+            disabled = false;
         }
 
     }
@@ -112,7 +114,7 @@ public class Attack {
                 break;
 
             case Disable:
-
+                returnItem.disabled = true;
                 break;
             case Recharge:
                 returnItem.recharge = true;
@@ -132,6 +134,12 @@ public class Attack {
         specialAttackReturn attackReturn = new specialAttackReturn();
         attackReturn = useSpecial();
         return attackReturn.doAttack;
+    }
+
+    public boolean isPokemonDisabled(){
+        specialAttackReturn disableReturn = new specialAttackReturn();
+        disableReturn = useSpecial();
+        return disableReturn.disabled;
     }
 
     public boolean isStunned(){
