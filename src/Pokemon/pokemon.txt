@@ -12,7 +12,7 @@ Seel,60,water, ,electric,1,Headbutt,30,30,stun
 Staryu,40,water, ,electric,1,Slap,20,20, 
 Magikarp,30,water, ,electric,2,Tackle,20,30, ,Flail,20,15,wild storm
 Tangela,50,grass, ,fire,2,Bind,25,20,stun,Poisonpowder,30,40,wild card
-Pinisir,60,grass, ,fire,2,Irongrip,20,20,stun,Guillotine,40,50,wild card
+Pinsir,60,grass, ,fire,2,Irongrip,20,20,stun,Guillotine,40,50,wild card
 Venonat,40,grass, ,fire,2,Stun Spore,20,20,stun,Leech Life,0,15,recharge
 Bulbasaur,40,grass, ,fire,2,Leech Seed,0,10,recharge,Tackle,30,30, 
 Nidoran,40,grass, ,fire,1,Horn Hazard,30,50,wild card
