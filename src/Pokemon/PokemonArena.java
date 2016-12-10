@@ -63,7 +63,7 @@ public class PokemonArena {
     }
 
     private int chooseNumber(String caption, int listSize, ArrayList<Pokemon> partyPokemon){
-        return chooseNumber(caption, listSize, false, partyPokemon, true);
+        return chooseNumber(caption, listSize, false, partyPokemon, false);
     }
 
     private int chooseNumber(String caption, int listSize, boolean acceptZero, ArrayList<Pokemon> partyPokemon, boolean choosingPokemon){

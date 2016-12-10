@@ -112,7 +112,7 @@ public class Attack {
                 break;
 
             case Disable:
-                returnItem.stunned = true;
+
                 break;
             case Recharge:
                 returnItem.recharge = true;
