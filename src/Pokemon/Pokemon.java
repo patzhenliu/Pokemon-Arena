@@ -6,7 +6,7 @@ enum pokemonType {Earth, Fire, Grass, Water, Fighting, Electric, Not_A_Type};
 
 public class Pokemon {
     private String name;
-    private int hp, energy;
+    private int hp, maxhp, energy;
     private pokemonType type, resistance, weakness;
     private ArrayList<Attack> attacks;
 
@@ -58,6 +58,7 @@ public class Pokemon {
     private void setPokemon(String name, int hp, pokemonType type, pokemonType resistance, pokemonType weakness, ArrayList<Attack> attacks){
         this.name = name;
         this.hp = hp;
+        maxhp = hp;
         energy = 50;
         this.type = type;
         this.resistance = resistance;
@@ -65,20 +66,37 @@ public class Pokemon {
         this.attacks = attacks;
     }
 
-    public void print(){
-        System.out.printf("%-14s %-10d %-10d %-12s %-12s %-10s%n", name, hp, energy, type,
-                (resistance==pokemonType.Not_A_Type)?"-":resistance,
-                (weakness==pokemonType.Not_A_Type)?"-":weakness);
-        //System.out.println();
-        for(int i = 0; i< attacks.size(); i++){
-            attacks.get(i).print(i + 1);
+    public void printPokemonStatus(boolean yourPokemon){
+        if (!yourPokemon){
+            System.out.println("------------------------------");
+            System.out.printf("%s HP: %d ENERGY: %d%n", name, hp, energy);
+        }
+        else if (yourPokemon){
+            System.out.printf("%n%s HP: %d ENERGY: %d%n", name, hp, energy);
+            System.out.println("------------------------------");
+        }
 
+    }
+
+    public void print(){
+        if (isFainted()){
+            System.out.printf("%-14s %-10s%n", name, "FAINTED");
+        }
+        else {
+            System.out.printf("%-14s %-10d %-10d %-12s %-12s %-10s%n", name, hp, energy, type,
+                    (resistance == pokemonType.Not_A_Type) ? "-" : resistance,
+                    (weakness == pokemonType.Not_A_Type) ? "-" : weakness);
+            //System.out.println();
+            for (int i = 0; i < attacks.size(); i++) {
+                attacks.get(i).print(i + 1);
+
+            }
         }
         System.out.println("----------------------------------------------------------------------------");
 
     }
 
-    public String getPokemonName(){
+    public String getName(){
         return name;
     }
 
@@ -86,9 +104,87 @@ public class Pokemon {
         return hp <= 0;
     }
 
-    public void attack(int attackInt, Pokemon enemyPokemon){
-        enemyPokemon.setHP(enemyPokemon.getHP() - attacks.get(attackInt).getDamage());
-        energy -= attacks.get(attackInt).getEnergyCost();
+    public pokemonType getType(){
+        return type;
+    }
+
+    public boolean attack(int attackInt, Pokemon enemyPokemon){
+        boolean doAttack = true;
+        int count = 0;
+        int damage = attacks.get(attackInt).getDamage();
+
+        if (enemyPokemon.getType() == weakness){
+            damage = damage/2;
+            //System.out.println("Not very Effective.");
+        }
+
+        else if (enemyPokemon.getType() == resistance){
+            damage = damage * 2;
+            //System.out.println("Super Effective!");
+        }
+
+        while (doAttack == true && enemyPokemon.getHP() > 0){
+            doAttack = attacks.get(attackInt).doesPokemonAttack();
+            //check resistance and weakness
+            if (doAttack == true) {
+                System.out.printf("%s used %s", getName(), getAttackList().get(attackInt).getName()); // delete later
+
+
+                enemyPokemon.setHP(enemyPokemon.getHP() - damage);
+
+                if (attacks.get(attackInt).isEnergyRecharged()){
+                    setEnergy(energy + 20);
+                }
+            }
+            //break if not wild storm
+
+            if (attacks.get(attackInt).getSpecial() == attackType.Wild_Storm && doAttack){
+                count++;
+                System.out.printf("(%d)%n", count);
+            }
+            else{
+                System.out.println();
+            }
+
+            if (attacks.get(attackInt).getSpecial() != attackType.Wild_Storm){
+                if (!doAttack){
+                    if (attacks.get(attackInt).getSpecial() == attackType.Wild_Card){
+                        System.out.printf("%s tried to use %s, but failed%n", name, attacks.get(attackInt).getName());
+                    }
+                }
+
+                doAttack = false;
+            }
+        }
+
+        setEnergy(energy - attacks.get(attackInt).getEnergyCost());
+        if  (attacks.get(attackInt).getSpecial() == attackType.Wild_Storm){
+            if (count > 0) {
+                System.out.printf("%s used %s (%d) time(s)%n", name, attacks.get(attackInt).getName(), count);
+            }
+            else{
+                System.out.printf("%s tried to use %s, but failed%n", name, attacks.get(attackInt).getName(), count);
+            }
+        }
+        if (enemyPokemon.getType() == weakness){
+            System.out.println("Not very Effective.");
+        }
+
+        else if (enemyPokemon.getType() == resistance){
+            System.out.println("Super Effective!");
+        }
+
+        return attacks.get(attackInt).isStunned();
+    }
+
+    private void setEnergy(int newEnergy){
+        energy = newEnergy;
+    	/*if (energy < 0){
+    		energy = 0;
+    	}*/
+        if (energy > 50){
+            energy = 50;
+        }
     }
 
 
@@ -97,11 +193,35 @@ public class Pokemon {
     }
 
     private void setHP(int newHP){
-
-        hp = newHP;
+        if (newHP > maxhp){
+            hp = maxhp;
+        }
+        else {
+            hp = newHP;
+        }
     }
 
-    public int getAttackNum(){
+    public ArrayList<Attack> getAttackList(){
+        return attacks;
+    }
+
+    public int getAttackLength(){
         return attacks.size();
+    }
+
+    public int getEnergy(){
+        return energy;
+    }
+
+    public void recoverEnergy(){
+        setEnergy(energy + 10);
+    }
+
+    public void recoverHP(){
+        setHP(hp + 20);
+    }
+
+    public void specialAttackRecover(){
+        setEnergy(energy + 20);
     }
 }

@@ -1,10 +1,24 @@
 package Pokemon;
-
 //Attack.java
+
+import java.util.*;
 
 enum attackType {Stun, Wild_Card, Wild_Storm, Disable, Recharge, None};
 
 public class Attack {
+    private class specialAttackReturn{
+
+        public boolean stunned;
+        public boolean doAttack;
+        public boolean recharge;
+
+        public specialAttackReturn(){
+            stunned = false;
+            doAttack = true;
+            recharge = false;
+        }
+
+    }
     private String name;
     private int energyCost, damage;
     private attackType special;
@@ -45,11 +59,17 @@ public class Attack {
 
     }
 
+
+
     public void print(int attackNumber){
-        System.out.printf("%4s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", (char)149, "ATK", attackNumber,  name,
+        System.out.printf("%s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", "-", "ATK", attackNumber,  name,
                 energyCost, damage, (special==attackType.None)?"-":special.toString().replace("_", " "));
         //new String(Character.toChars(0x0A66))
 
+    }
+
+    public String getName(){
+        return name;
     }
 
     public int getDamage(){
@@ -60,4 +80,67 @@ public class Attack {
         return energyCost;
     }
 
+    public specialAttackReturn useSpecial(){
+        specialAttackReturn returnItem = new specialAttackReturn();
+
+        Random rand = new Random();
+        int chance = rand.nextInt(2);
+
+        switch (special) {
+            case Stun:
+                if (chance == 1){
+                    returnItem.stunned = true;
+                }
+                break;
+
+            case Wild_Card:
+
+                if (chance == 1){
+                    //System.out.println("failed to use wild card");
+                    returnItem.doAttack = false;
+                }
+
+                break;
+
+            case Wild_Storm:
+
+                if (chance == 1){
+                    //System.out.println("failed to use wild storm");
+                    returnItem.doAttack = false;
+                }
+
+                break;
+
+            case Disable:
+                returnItem.stunned = true;
+                break;
+            case Recharge:
+                returnItem.recharge = true;
+                break;
+            default:
+        }
+        return returnItem;
+    }
+
+    public boolean isEnergyRecharged(){
+        specialAttackReturn rechargeReturn = new specialAttackReturn();
+        rechargeReturn = useSpecial();
+        return rechargeReturn.recharge;
+    }
+
+    public boolean doesPokemonAttack(){
+        specialAttackReturn attackReturn = new specialAttackReturn();
+        attackReturn = useSpecial();
+        return attackReturn.doAttack;
+    }
+
+    public boolean isStunned(){
+        specialAttackReturn stunReturn = new specialAttackReturn();
+        stunReturn = useSpecial();
+        return stunReturn.stunned;
+    }
+
+    public attackType getSpecial(){
+        return special;
+    }
 }
