@@ -7,6 +7,7 @@ enum attackType {Stun, Wild_Card, Wild_Storm, Disable, Recharge, None};
 
 public class Attack {
     private class specialAttackReturn{
+        //class to return more than one item
 
         public boolean stunned;
         public boolean doAttack;
@@ -23,7 +24,11 @@ public class Attack {
     }
     private String name;
     private int energyCost, damage;
-    private attackType special;
+    private attackType special; //special attack for the attack (if there are any)
+
+    public Attack(String name, String energyCost, String damage, String special){
+        setAttack(name, Integer.parseInt(energyCost), Integer.parseInt(damage), stringToAttackType(special));
+    }
 
     private void setAttack(String name, int energyCost, int damage, attackType special){
         this.name = name;
@@ -31,11 +36,9 @@ public class Attack {
         this.damage = damage;
         this.special = special;
     }
-    public Attack(String name, String energyCost, String damage, String special){
-        setAttack(name, Integer.parseInt(energyCost), Integer.parseInt(damage), stringToAttackType(special));
-    }
 
     private attackType stringToAttackType(String type){
+        //turns the string from text file to an attackType
         attackType returnType;
         switch (type) {
             case "stun":
@@ -61,28 +64,15 @@ public class Attack {
 
     }
 
-
-
     public void print(int attackNumber){
+        //prints all attack information
         System.out.printf("%s %-1s %-2d %-13s ENERGY COST: %-5d DAMAGE: %-5d SP. ATK: %s%n", "-", "ATK", attackNumber,  name,
                 energyCost, damage, (special==attackType.None)?"-":special.toString().replace("_", " "));
-        //new String(Character.toChars(0x0A66))
 
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public int getDamage(){
-        return damage;
-    }
-
-    public int getEnergyCost(){
-        return energyCost;
     }
 
     public specialAttackReturn useSpecial(){
+        //cases for every special attack
         specialAttackReturn returnItem = new specialAttackReturn();
 
         Random rand = new Random();
@@ -96,30 +86,25 @@ public class Attack {
                 break;
 
             case Wild_Card:
-
                 if (chance == 1){
-                    //System.out.println("failed to use wild card");
                     returnItem.doAttack = false;
                 }
-
                 break;
 
             case Wild_Storm:
-
                 if (chance == 1){
-                    //System.out.println("failed to use wild storm");
                     returnItem.doAttack = false;
                 }
-
                 break;
 
             case Disable:
                 returnItem.disabled = true;
                 break;
+
             case Recharge:
                 returnItem.recharge = true;
                 break;
-            default:
+
         }
         return returnItem;
     }
@@ -131,18 +116,21 @@ public class Attack {
     }
 
     public boolean doesPokemonAttack(){
+        //checks if attack if performed
         specialAttackReturn attackReturn = new specialAttackReturn();
         attackReturn = useSpecial();
         return attackReturn.doAttack;
     }
 
     public boolean isPokemonDisabled(){
+        //checks if attack will disable opponent
         specialAttackReturn disableReturn = new specialAttackReturn();
         disableReturn = useSpecial();
         return disableReturn.disabled;
     }
 
     public boolean isStunned(){
+        //checks if attack will stun opponent
         specialAttackReturn stunReturn = new specialAttackReturn();
         stunReturn = useSpecial();
         return stunReturn.stunned;
@@ -150,5 +138,17 @@ public class Attack {
 
     public attackType getSpecial(){
         return special;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getDamage(){
+        return damage;
+    }
+
+    public int getEnergyCost(){
+        return energyCost;
     }
 }
