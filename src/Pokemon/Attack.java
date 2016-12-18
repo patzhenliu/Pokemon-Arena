@@ -6,6 +6,7 @@ import java.util.*;
 enum attackType {Stun, Wild_Card, Wild_Storm, Disable, Recharge, None};
 
 public class Attack {
+    // describe what is this for ***********************************************************************
     private class specialAttackReturn{
         //class to return more than one item
 

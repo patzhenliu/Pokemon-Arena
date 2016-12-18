@@ -202,6 +202,7 @@ public class PokemonArena {
                 System.out.printf("%s, RETURN!%n", yourPokemon.getName());
                 returnItem.changePokemon = true;
                 returnItem.switchPokemon = true;
+                returnItem.attacked = false;
                 break;
 
             case 2: //pass
@@ -286,7 +287,7 @@ public class PokemonArena {
 
     private void postBattle(ArrayList<Pokemon> partyPokemon, Pokemon faintedPokemon, Pokemon pokemonInBattle){
         //resets some pokemon stats after battle - not disabled anymore and user's pokemon heal hp
-        System.out.println(faintedPokemon.getName()+" has fainted");
+        System.out.println(faintedPokemon.getName()+" has fainted\n");
         healHP(partyPokemon);
         pokemonInBattle.setDisabled();
         for (Pokemon p:partyPokemon){
@@ -353,7 +354,7 @@ public class PokemonArena {
         while(!change.toUpperCase().equals("N") && !change.toUpperCase().equals("Y")){
             try{
                 Scanner kb = new Scanner(System.in);
-                System.out.printf("%n%s [Y/N]%n", caption);
+                System.out.printf("%s [Y/N]%n", caption);
                 change = kb.nextLine();
 
                 if (change.toUpperCase().equals("Y")){
@@ -435,7 +436,7 @@ public class PokemonArena {
                 playerSwitchedPokemon = false;
 
                 if (switchPokemon) {
-                    playerSwitchedPokemon = true;
+                    playerSwitchedPokemon = true; //if player voluntarily switches
                 }
 
                 if (!switchPokemon && !inBattle.isFainted()) {
@@ -443,20 +444,19 @@ public class PokemonArena {
                     printEnemiesLeft(enemyParty);
                 }
                 if (switchPokemon || inBattle.isFainted()) {
-                    if (playerSwitchedPokemon){
+                    if (playerSwitchedPokemon) {
                         //if user's pokemon didn't faint they aren't required to change pokemon
                         printMenu(partyPokemon, "PARTY POKEMON", true);
-                    }
-                    else {
+                    } else {
                         printMenu(partyPokemon, "PARTY POKEMON", false);
                     }
                     Pokemon currentPokemon = choosePokemonToFight(partyPokemon, inBattle);
-                    if(currentPokemon.equals(inBattle)){
+                    if (currentPokemon.equals(inBattle)) {
                         //if player didn't switch pokemon it's still their turn
+                        playerSwitchedPokemon = false;
                         yourTurn = true;
                     }
                     inBattle = currentPokemon;
-
                 }
                 enemyInBattle = enemyParty.get(findNextAvailablePokemon(enemyParty));
             }
