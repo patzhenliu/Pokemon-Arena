@@ -43,7 +43,7 @@ public class PokemonArena {
         return pokemonProfiles;
     }
 
-    private void printMenu(ArrayList<Pokemon> pokemonProfiles, String caption){
+    private void printMenu(ArrayList<Pokemon> pokemonProfiles, String caption, boolean zeroToExit){
         //prints pokemon menu
         int i = 1;
         System.out.printf("%43s%n",caption);
@@ -54,6 +54,9 @@ public class PokemonArena {
             System.out.printf("%-3d",i);
             item.print();
             i++;
+        }
+        if (zeroToExit){
+            System.out.println("Press 0 to go back");
         }
         System.out.println();
     }
@@ -123,11 +126,19 @@ public class PokemonArena {
 
     private Pokemon choosePokemonToFight(ArrayList<Pokemon> partyPokemon, Pokemon inBattle){
         //user chooses a pokemon out of their party pokemon to battle
-        int pokemonIndex = chooseNumber("Choose a Pokemon to fight: ", partyPokemon.size(), true, partyPokemon, true);
-        if (pokemonIndex != -1) {
-            Pokemon p = partyPokemon.get(pokemonIndex);
-            printIChooseYou(p);
-            return p;
+        int pokemonIndex = 0;
+        while (pokemonIndex != -1){
+            pokemonIndex = chooseNumber("Choose a Pokemon to fight: ", partyPokemon.size(), true, partyPokemon, true);
+            if (pokemonIndex != -1) {
+                Pokemon chosenPokemon = partyPokemon.get(pokemonIndex);
+                if (!chosenPokemon.equals(inBattle)) {
+                    printIChooseYou(chosenPokemon);
+                    return chosenPokemon;
+                }
+                else{
+                    System.out.printf("%s is already in battle%n%n", chosenPokemon.getName());
+                }
+            }
         }
         return inBattle;
     }
@@ -391,7 +402,7 @@ public class PokemonArena {
         kb.nextLine();
 
         //prints all pokemon and attacks
-        printMenu(pokemonProfiles, "POKEMON ARENA MENU");
+        printMenu(pokemonProfiles, "POKEMON ARENA MENU", false);
         selectPokemon(pokemonProfiles, partyPokemon); //Ask user to select partySize number of Pokemon
 
         //enemy party is created with the remaining pokemon
@@ -403,7 +414,7 @@ public class PokemonArena {
         Collections.shuffle(enemyParty);
 
         boolean gameOver = false;
-        printMenu(partyPokemon, "PARTY POKEMON");
+        printMenu(partyPokemon, "PARTY POKEMON", false);
         Pokemon enemyInBattle = enemyParty.get(findNextAvailablePokemon(enemyParty));
         Pokemon inBattle = choosePokemonToFight(partyPokemon);
         boolean playerSwitchedPokemon = false;
@@ -432,11 +443,17 @@ public class PokemonArena {
                     printEnemiesLeft(enemyParty);
                 }
                 if (switchPokemon || inBattle.isFainted()) {
-                    printMenu(partyPokemon, "PARTY POKEMON");
-                    //String currentPokemon = inBattle.getName();
+                    if (playerSwitchedPokemon){
+                        //if user's pokemon didn't faint they aren't required to change pokemon
+                        printMenu(partyPokemon, "PARTY POKEMON", true);
+                    }
+                    else {
+                        printMenu(partyPokemon, "PARTY POKEMON", false);
+                    }
                     Pokemon currentPokemon = choosePokemonToFight(partyPokemon, inBattle);
                     if(currentPokemon.equals(inBattle)){
-                        playerSwitchedPokemon = false;
+                        //if player didn't switch pokemon it's still their turn
+                        yourTurn = true;
                     }
                     inBattle = currentPokemon;
 
